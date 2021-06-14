@@ -16,8 +16,8 @@ jobs:
         id: release
         with:
           release-type: node
-          package-name: '@ninanfm/podcast-feed'
-          token: ${{ secrets.NPM_TOKEN }}
+          package-name: '@ninanfm/feed'
+          token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/checkout@v2
         if: ${{ steps.release.outputs.release_created }}
       - uses: actions/setup-node@v2
@@ -36,5 +36,4 @@ jobs:
       - uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          registry: https://npm.pkg.github.com
         if: ${{ steps.release.outputs.release_created }}
