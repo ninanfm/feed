@@ -8,7 +8,7 @@
     "build/src"
   ],
   "license": "MIT",
-  "keywords": [],
+  "keywords": ["feed", "RSS", "JSONFeed", "podcast", "iTunes", "generator"],
   "scripts": {
     "ts": "ts-node --files",
     "test": "echo pass",

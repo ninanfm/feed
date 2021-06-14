@@ -1,6 +1,6 @@
 import * as objectPath from 'object-path';
 import {iTunes, RSS2_0 as RSS, xml} from '../';
-import {postProcessor, tags} from '../tags';
+import {postProcessor} from '../tags';
 
 export enum PodcastType {
   Episodic = 'Episodic',
