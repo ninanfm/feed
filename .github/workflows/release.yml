@@ -1,0 +1,40 @@
+name: Release
+
+on:
+  workflow_run:
+    workflows: ["Run Tests"]
+    branches: [main]
+    types: 
+      - completed
+
+jobs:
+  release:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: GoogleCloudPlatform/release-please-action@v2
+        id: release
+        with:
+          release-type: node
+          package-name: '@ninanfm/podcast-feed'
+          token: ${{ secrets.NPM_TOKEN }}
+      - uses: actions/checkout@v2
+        if: ${{ steps.release.outputs.release_created }}
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+        if: ${{ steps.release.outputs.release_created }}
+      - uses: actions/cache@v2
+        id: cache-deps
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      - run: yarn --frozen-lockfile
+        if: ${{ steps.release.outputs.release_created && steps.cache-deps.outputs.cache-hit != 'true' }}
+      - run: yarn build
+        if: ${{ steps.release.outputs.release_created }}
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          registry: https://npm.pkg.github.com
+        if: ${{ steps.release.outputs.release_created }}

@@ -1,0 +1,45 @@
+{
+  "name": "@ninanfm/feed",
+  "version": "0.0.0",
+  "description": "",
+  "main": "build/src/index.js",
+  "types": "build/src/index.d.ts",
+  "files": [
+    "build/src"
+  ],
+  "license": "MIT",
+  "keywords": [],
+  "scripts": {
+    "ts": "ts-node --files",
+    "test": "echo pass",
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "build": "tsc",
+    "fix": "gts fix",
+    "posttest": "yarn lint"
+  },
+  "devDependencies": {
+    "@types/node": "^14.11.2",
+    "@types/object-path": "^0.11.0",
+    "@types/rss": "^0.0.28",
+    "gts": "^3.1.0",
+    "reflect-metadata": "^0.1.13",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "@types/mime-db": "^1.43.0",
+    "deep-cleaner": "^1.2.1",
+    "iso-3166-1": "^2.0.1",
+    "iso-639-1": "^2.1.9",
+    "joi": "^17.4.0",
+    "mime-db": "^1.48.0",
+    "object-path": "^0.11.5",
+    "rfc822-date": "^0.0.3",
+    "rss": "^1.2.2",
+    "xmlbuilder2": "^2.4.1"
+  },
+  "peerDependencies": {
+    "reflect-metadata": "^0.1.13"
+  }
+}
