@@ -22,6 +22,8 @@
 
 This package must to use with [reflect-metadata](https://www.npmjs.com/package/reflect-metadata), so you have to make sure that you have installed it.
 
+First step is to install all required packages:
+
 ```bash
 yarn add reflect-metadata @ninanfm/feed
 # or
@@ -35,7 +37,7 @@ import 'reflect-metadata';
 ```
 
 The next step is to define models to tell `@ninanfm/feed` how to generate your feed.
-Here, we suppose that your are using this package with TypeORM and want to generate a RSS feed for your blog.
+Here, we assume that your are using this package with TypeORM and want to generate a RSS feed for your blog.
 
 ```typescript
 import { RSS2_0 as RSS, xml } from '@ninanfm/feed';
