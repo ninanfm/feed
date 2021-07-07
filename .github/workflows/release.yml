@@ -35,6 +35,6 @@ jobs:
         if: ${{ steps.release.outputs.release_created }}
       - uses: JS-DevTools/npm-publish@v1
         with:
-          token: ${{ secrets.NPM_TOKEN }}
-          access: 'public'
-        if: ${{ steps.release.outputs.release_created }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          registry: https://npm.pkg.github.com
+        if: ${{ steps.release.outputs.release_created }}}
