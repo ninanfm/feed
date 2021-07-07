@@ -6,6 +6,39 @@ import {FeedParser} from '../types';
 import {Item, RSSFeed} from './feed';
 
 export class RSSFeedParser implements FeedParser<RSSFeed> {
+  protected readonly channelElementParser = new Map([
+    ['title', this.parseChannelTitle],
+    ['description', this.parseChannelDescription],
+    ['link', this.parseChannelLink],
+    ['image', this.parseChannelImage],
+    ['generator', this.parseGeneratorLink],
+    ['lastBuildDate', this.parseChannelLastBuildDate],
+    ['copyright', this.parseChannelCopyright],
+    ['language', this.parseChannelLanguage],
+    ['managingEditor', this.parseChannelManagingEditor],
+    ['webMaster', this.parseChannelWebMaster],
+    ['docs', this.parseChannelDocs],
+    ['ttl', this.parseChannelTTL],
+    ['textInput', this.parseChannelTextInput],
+    ['skipHours', this.parseChannelSkipHours],
+    ['skipDays', this.parseChannelSkipDays],
+    ['category', this.parseChannelCategories],
+    ['item', this.parseChannelItems],
+  ]);
+
+  protected readonly itemElementParser = new Map([
+    ['title', this.parseItemTitle],
+    ['link', this.parseItemLink],
+    ['description', this.parseItemDescription],
+    ['author', this.parseItemAuthor],
+    ['categories', this.parseItemCategories],
+    ['comments', this.parseItemComments],
+    ['enclosure', this.parseItemEnclosure],
+    ['guid', this.parseItemGuid],
+    ['pubDate', this.parseItemPubDate],
+    ['source', this.parseItemSource],
+  ]);
+
   parse(rawData: string): RSSFeed {
     const data = create(rawData).toObject();
     const feed: DeepPartial<RSSFeed> = {};
@@ -46,60 +79,10 @@ export class RSSFeedParser implements FeedParser<RSSFeed> {
     for (const entry of Object.entries(channel)) {
       const elementName = entry[0];
       const elementValue = normalizeElement(entry[1]);
+      const parse = this.channelElementParser.get(elementName);
 
-      switch (elementName) {
-        case 'title':
-          this.parseChannelTitle(elementValue, root, feed);
-          break;
-        case 'description':
-          this.parseChannelDescription(elementValue, root, feed);
-          break;
-        case 'link':
-          this.parseChannelLink(elementValue, root, feed);
-          break;
-        case 'image':
-          this.parseChannelImage(elementValue, root, feed);
-          break;
-        case 'generator':
-          this.parseGeneratorLink(elementValue, root, feed);
-          break;
-        case 'lastBuildDate':
-          this.parseChannelLastBuildDate(elementValue, root, feed);
-          break;
-        case 'copyright':
-          this.parseChannelCopyright(elementValue, root, feed);
-          break;
-        case 'language':
-          this.parseChannelLanguage(elementValue, root, feed);
-          break;
-        case 'managingEditor':
-          this.parseChannelManagingEditor(elementValue, root, feed);
-          break;
-        case 'webMaster':
-          this.parseChannelWebMaster(elementValue, root, feed);
-          break;
-        case 'docs':
-          this.parseChannelDocs(elementValue, root, feed);
-          break;
-        case 'ttl':
-          this.parseChannelTTL(elementValue, root, feed);
-          break;
-        case 'textInput':
-          this.parseChannelTextInput(elementValue, root, feed);
-          break;
-        case 'skipHours':
-          this.parseChannelSkipHours(elementValue, root, feed);
-          break;
-        case 'skipDays':
-          this.parseChannelSkipDays(elementValue, root, feed);
-          break;
-        case 'category':
-          this.parseChannelCategories(elementValue, root, feed);
-          break;
-        case 'item':
-          this.parseChannelItems(elementValue, root, feed);
-          break;
-        default:
+      if (parse) {
+        parse.call(this, elementValue, root, feed);
       }
     }
   }
@@ -355,40 +338,10 @@ export class RSSFeedParser implements FeedParser<RSSFeed> {
     for (const entry of Object.entries(element)) {
       const elementName = entry[0];
       const elementValue = normalizeElement(entry[1]);
+      const parse = this.itemElementParser.get(elementName);
 
-      switch (elementName) {
-        case 'title':
-          this.parseItemTitle(elementValue, root, item);
-          break;
-        case 'link':
-          this.parseItemLink(elementValue, root, item);
-          break;
-        case 'description':
-          this.parseItemDescription(elementValue, root, item);
-          break;
-        case 'author':
-          this.parseItemAuthor(elementValue, root, item);
-          break;
-        case 'categories':
-          this.parseItemCategories(elementValue, root, item);
-          break;
-        case 'comments':
-          this.parseItemComments(elementValue, root, item);
-          break;
-        case 'enclosure':
-          this.parseItemEnclosure(elementValue, root, item);
-          break;
-        case 'guid':
-          this.parseItemGuid(elementValue, root, item);
-          break;
-        case 'pubDate':
-          this.parseItemPubDate(elementValue, root, item);
-          break;
-        case 'source':
-          this.parseItemSource(elementValue, root, item);
-          break;
-        default:
-          break;
+      if (parse) {
+        parse.call(this, elementValue, root, item);
       }
     }
   }
@@ -510,7 +463,7 @@ export class RSSFeedParser implements FeedParser<RSSFeed> {
   }
 }
 
-function getDate(element: any, path: string): Date | undefined {
+export function getDate(element: any, path: string): Date | undefined {
   const dateStr = getValue(element);
   if (!dateStr) {
     return;
@@ -520,7 +473,7 @@ function getDate(element: any, path: string): Date | undefined {
   return date;
 }
 
-function getValue(element: any): string | undefined {
+export function getValue(element: any): string | undefined {
   if (typeof element === 'string') {
     return element;
   }
@@ -533,7 +486,7 @@ function getValue(element: any): string | undefined {
   return;
 }
 
-function normalizeElement(element: any): any {
+export function normalizeElement(element: any): any {
   if (!element['#']) {
     return element;
   }

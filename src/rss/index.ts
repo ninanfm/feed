@@ -3,17 +3,18 @@ import {Spec} from '../types';
 import {RSSFeed} from './feed';
 import {RSSFeedGenerator} from './generator';
 import {RSSFeedParser} from './parser';
-import {applyMixins} from '../utils';
 
-export {RSSFeed} from './feed';
+export * from './feed';
 
 export class RSS implements Spec<RSSFeed> {
+  private parser = new RSSFeedParser();
+  private generator = new RSSFeedGenerator();
+
   generate(feed: RSSFeed): string {
-    throw new Error('Method not implemented.');
+    return this.generator.generate(feed);
   }
+
   parse(rawData: string): RSSFeed {
-    throw new Error('Method not implemented.');
+    return this.parser.parse(rawData);
   }
 }
-
-applyMixins(RSS, [RSSFeedGenerator, RSSFeedParser]);

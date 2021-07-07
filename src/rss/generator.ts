@@ -6,15 +6,11 @@ import rfc822Date from 'rfc822-date';
 
 export class RSSFeedGenerator implements FeedGenerator<RSSFeed> {
   generate(feed: RSSFeed): string {
-    const {root, rss} = this.createRootElement(feed);
-    this.createChannelElement(rss, feed);
+    const root = this.createRootElement(feed);
     return root.toString();
   }
 
-  protected createRootElement(feed: RSSFeed): {
-    root: XMLBuilder;
-    rss: XMLBuilder;
-  } {
+  protected createRootElement(feed: RSSFeed): XMLBuilder {
     const root = create();
     const rss = root.ele('rss');
 
@@ -24,7 +20,9 @@ export class RSSFeedGenerator implements FeedGenerator<RSSFeed> {
       rss.att(`xmlns:${namespace.name}`, namespace.url);
     }
 
-    return {root, rss};
+    this.createChannelElement(rss, feed);
+
+    return root;
   }
 
   protected createChannelElement(rss: XMLBuilder, feed: RSSFeed): void {
@@ -144,7 +142,7 @@ export class RSSFeedGenerator implements FeedGenerator<RSSFeed> {
     }
   }
 
-  protected createCategoryElements(
+  private createCategoryElements(
     parent: XMLBuilder,
     categories: Category[]
   ): void {
